@@ -12,8 +12,8 @@ int main()
     double BParray[42];
     string stro,strc;
     double Z00,Y00,X00;
-    stro="XYZ_origin_2.xyz";
-    strc="XYZ_target_2.xyz";
+    stro="data/XYZ_origin_2.xyz";
+    strc="data/XYZ_target_2.xyz";
     file_read(stro,ArrayOrg);
     file_read(strc,ArrayChg);
     for(int n=0;n<18;n++)
