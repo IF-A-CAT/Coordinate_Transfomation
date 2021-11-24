@@ -10,6 +10,8 @@ int main()
     double ArrayOrgBefore[12],ArrayChgBefore[12];
     double ArrayOrgPost[6],ArrayChgPost[6];
     double BParray[42];
+    double points[3]={-2100203.2849,5496203.0138,2894203.6030};
+    double Bpoint[21];
     string stro,strc;
     double Z00,Y00,X00;
     stro="data/XYZ_origin_2.xyz";
@@ -48,6 +50,8 @@ int main()
     matrix vtran(12,1);
     matrix residual(12,1);
     matrix X(7,1);
+    matrix Bpointmat(3,7);
+    matrix pointchg(3,1);
     L.setelems_by_array(ArrayChgBefore);
     double Barray[84];
     double sumelems=1;
@@ -69,7 +73,7 @@ int main()
         Barray[21*i+17]=-Y00;
     }
     B.setelems_by_array(Barray);
-    while(sumelems>1e-10)
+    while(abs(sumelems)>1e-6)
     {
     l=L-L0;
     Btran=~B;
@@ -109,6 +113,23 @@ int main()
     LP.setelems_by_array(ArrayChgPost);
     Lsq=BP*X;
     vpost=LP-Lsq;
+     for(int i=0;i<1;i++)
+    {
+        X00=points[3*i];
+        Y00=points[3*i+1];
+        Z00=points[3*i+2];
+        Bpoint[21*i+1]=Bpoint[21*i+2]=Bpoint[21*i+3]=Bpoint[21*i+7]=Bpoint[21*i+9]=
+        Bpoint[21*i+11]=Bpoint[21*i+14]=Bpoint[21*i+15]=Bpoint[21*i+19]=0;
+        Bpoint[21*i]=Bpoint[21*i+8]=Bpoint[21*i+16]=1;
+        Bpoint[21*i+18]=Bpoint[21*i+6]=X00;
+        Bpoint[21*i+5]=Bpoint[21*i+13]=Y00;
+        Bpoint[21*i+10]=Bpoint[21*i+20]=Z00;
+        Bpoint[21*i+4]=-Z00;
+        Bpoint[21*i+12]=-X00;
+        Bpoint[21*i+17]=-Y00;
+    }
+    Bpointmat.setelems_by_array(Bpoint);
+    pointchg=Bpointmat*X;
     //result disply
     cout<<"--------------------"<<"Result Display"<<"--------------------"<<endl;
     cout<<"七参数最优估计值:"<<endl;
@@ -131,5 +152,8 @@ int main()
     cout<<"point\t\t"<<"dX\t\t"<<"dY\t\t"<<"dZ\t\t"<<endl;
     cout<<"5\t"<<vpost.elems[0]<<"\t"<<vpost.elems[1]<<"\t"<<vpost.elems[2]<<endl;
     cout<<"6\t"<<vpost.elems[3]<<"\t"<<vpost.elems[4]<<"\t"<<vpost.elems[5]<<endl;
+    cout<<"-------------------------------------------------------------"<<endl;
+    cout<<"学号坐标转换值:"<<endl;
+    pointchg.display();
     return 0;
 } 

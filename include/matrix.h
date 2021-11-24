@@ -1,4 +1,5 @@
 /* ������� */
+#pragma once
 class matrix 
 /* ������������ */
 {friend matrix operator+(matrix &a,matrix &b); 
