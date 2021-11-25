@@ -12,11 +12,11 @@ int main()
     double pointsorgPost[18],pointschgPost[18];
     double CoefArray[19*19];
     double K=1;
-    double n=0;
     double X0array[13]={0,0,0,1,1,0,0,0,1,0,0,0,1};
     double R0[9]={1,0,0,0,1,0,0,0,1};
     double Wkarray[6]={1,1,1,0,0,0};
     double Xchg=1;
+    double corr;
     double X00array[12];
     file_read("data/XYZ_origin_3.xyz",pointsorg);
     file_read("data/XYZ_target_3.xyz",pointschg);
@@ -33,8 +33,15 @@ int main()
             pointschgPost[i-33]=pointschg[i];
         }
     }
+    matrix BPost(18,13);
+    matrix vBefore(33,1);
+    matrix vBeforetran(1,33);
+    matrix vPost(18,1);
+    matrix B2(18,12);
     matrix invcoef(19,19);
     matrix Wk(6,1);
+    matrix XYZorgPost(18,1);
+    matrix XYZchgPost(18,1);
     matrix wk(6,1);
     matrix xK(19,1);
     matrix XYZO(33,1);
@@ -54,6 +61,8 @@ int main()
     matrix XYZ00(13,1);
     matrix B1(33,12);
     matrix X00(12,1);
+    matrix Xpost(12,1);
+    matrix XYZPost(18,1);
     //matrix Ncc(6,6);
     //matrix Nccinv(6,6);
     //matrix Nbbinv(13,13);
@@ -79,6 +88,12 @@ int main()
     Btran=~B;
     XYZ00=B1*X00;
     Wl=XYZ-XYZ00;
+    for(int i=0;i<12;i++)
+    {   if(i<3)
+            X00array[i]=X0array[i];
+        else
+            X00array[i]=X0array[i+1];
+    }
     Wl=Btran*Wl;
     Nbb=Btran*B;
     //Nbbinv=rinv(Nbb);
@@ -135,6 +150,7 @@ int main()
     for(int i=0;i<13;i++)
     {
         Xchg+=abs(xK.elems[i]);
+        x.elems[i]=xK.elems[i];
         X0array[i]=X0array[i]+xK.elems[i];
         if(i>3)
         {
@@ -142,10 +158,34 @@ int main()
         }
     }
     K=K+xK.elems[3];
-    n+=1;
     }
-    XYZ00.display();
-    //(XYZ-XYZ00).display();
-    cout<<n<<endl;
+    XYZorgPost.setelems_by_array(pointsorgPost);
+    XYZchgPost.setelems_by_array(pointschgPost);
+    BPost=get_B_matrix(R,XYZorgPost,K,&B2);
+    XYZPost=B2*X00;
+    vBefore=B*x;
+    Wl=XYZ-XYZ00;
+    vBefore=vBefore-Wl;
+    vBeforetran=~vBefore;
+    corr=sqrt((vBeforetran*vBefore).elems[0]/32);
+
+
+
+    //result display
+    cout<<"-----------------------------Result Display---------------------------"<<endl;
+    cout<<"九参数:"<<endl;
+    R.display();
+    cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"条件数: "<<39<<endl;
+    cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"冗余度: "<<32<<endl;
+    cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"验后单位权中误差:"<<corr<<endl;
+    cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"公共点坐标残差:"<<endl;
+    Wl.display();
+    cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"检核点坐标残差:"<<endl;
+    (XYZchgPost-XYZPost).display();
     return 0;
 }

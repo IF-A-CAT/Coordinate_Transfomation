@@ -67,7 +67,7 @@ matrix get_B_matrix(matrix A,matrix X0,double K,matrix *B1)//for ThirteenArgumen
     {
         Barray[i]=0;
     }
-    for(int j=0;j<11;j++)
+    for(int j=0;j<X0.line/3;j++)
     {
     for(int i=0;i<39;i++)
     {
@@ -81,7 +81,7 @@ matrix get_B_matrix(matrix A,matrix X0,double K,matrix *B1)//for ThirteenArgumen
     Barray[5+j*39]=Barray[21+j*39]=Barray[37+j*39]=K*X0.elems[1+3*j];
     Barray[6+j*39]=Barray[22+j*39]=Barray[38+j*39]=K*X0.elems[2+3*j];
     }
-    for(int i=0;i<11;i++)
+    for(int i=0;i<X0.line/3;i++)
     {
         a=K*X0.elems[i*3];
         b=K*X0.elems[i*3+1];
