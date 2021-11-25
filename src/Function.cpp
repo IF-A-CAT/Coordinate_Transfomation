@@ -128,3 +128,23 @@ matrix get_C_matrix(matrix A)
     C.elems[77]=A.elems[7];
     return C;
 }
+
+void XYZ2BLH(double XYZ[],double BLH[])
+{
+    double a=6378137;
+    double b=6356752.3142451795;
+    double e=sqrt(a*a-b*b)/a;
+    double TanB=0,B,L,H,Btemp=1;
+    while(abs(Btemp-TanB)>1e-6)
+    {
+        Btemp=TanB;
+        TanB=(1/sqrt(XYZ[0]*XYZ[0]+XYZ[1]*XYZ[1]))*(XYZ[2]+(a*e*e*TanB)/sqrt(1+TanB*TanB-e*e*TanB*TanB));
+    }
+    L=atan(XYZ[1]/XYZ[0]);
+    B=atan(TanB);
+    H=sqrt(XYZ[0]*XYZ[0]+XYZ[1]*XYZ[1])/cos(B)-a/sqrt(1-e*e*sin(B)*sin(B));
+    BLH[0]=B;
+    BLH[1]=L;
+    BLH[2]=H;
+
+}
