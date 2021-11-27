@@ -30,6 +30,5 @@ int main()
     {
             cout<<i+1<<","<<XYZresult[i*3]<<","<<XYZresult[i*3+1]<<","<<XYZresult[i*3+2]<<endl;
     }
-    
     return 0;
 }
